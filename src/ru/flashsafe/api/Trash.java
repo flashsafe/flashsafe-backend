@@ -1,6 +1,6 @@
 package ru.flashsafe.api;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -23,7 +23,7 @@ public class Trash {
   @Produces(MediaType.APPLICATION_JSON)
   public Response list(@Context HttpServletRequest requestContext, @QueryParam("dir_id") int dir_id, @QueryParam("access_token") String access_token) {
 	  if(DBManager.checkAuth(access_token)) {
-		  ArrayList<FSObject> items = DBManager.getFoldersList(dir_id);
+		  List<FSObject> items = DBManager.getFoldersList(dir_id);
 		  if(items == null) {
 			  return Response.ok("{\"meta\":{\"code\":\"200\",\"msg\":\"null\"},\"data\":[]}", "application/json; charset=UTF-8").build();
 		  } else {

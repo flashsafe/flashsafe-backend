@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import ru.flashsafe.fs.FSObject;
 
@@ -129,7 +130,7 @@ public class DBManager {
 	  return null;
 	}
 	
-	public static ArrayList<FSObject> getFoldersList(int dir_id) {
+	public static List<FSObject> getFoldersList(int dir_id) {
 	  PreparedStatement ps = null;
 	  ResultSet rs = null;
 	  try {
@@ -144,17 +145,18 @@ public class DBManager {
 			  ps.setInt(2, dir_id);
 		  }
 		  rs = ps.executeQuery();
-		  if(rs.getFetchSize() > 0) {
-			  ArrayList<FSObject> items = new ArrayList<>();
-			  while(rs.next()) {
-				  FSObject item = new FSObject(rs.getLong("id"), rs.getString("type"), rs.getString("name"), rs.getString("format"), rs.getLong("size"),
-						  rs.getString("pincode"), rs.getLong("count"), rs.getString("create_time"), rs.getString("update_time"));
-				  items.add(item);
-			  }
-			  return items;
-		  } else {
+		  //if(rs.getFetchSize() > 0) { - wrong usage! see: https://docs.oracle.com/javase/7/docs/api/java/sql/ResultSet.html#getFetchSize()
+            List<FSObject> items = new ArrayList<>();
+            while (rs.next()) {
+                FSObject item = new FSObject(rs.getLong("id"), rs.getString("type"), rs.getString("name"),
+                        rs.getString("format"), rs.getLong("size"), rs.getString("pincode"), rs.getLong("count"),
+                        rs.getString("create_time"), rs.getString("update_time"));
+                items.add(item);
+            }
+            return items.isEmpty() ? null : items;
+		  /*} else {
 			  return null;
-		  }
+		  }*/
 	  } catch(SQLException e) {
 		  e.printStackTrace();
 		  return null;
